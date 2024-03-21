@@ -45,11 +45,20 @@ class PersonManager:
                         person.fullname = f.readline()
                 elif file[-3:] == 'jpg' or "png":
                     person.img = cv2.imread(file_path)
+            if person.fullname == '':
+                person.fullname = person_id
 
             # если изображение у объекта person существует - построить по нему вектор биометрии
             if person.img is not None:
                 encoding = self.encoder.encode(person.img)
                 person.encoding = encoding
+                if encoding is None:
+                    print("Не удалось построить вектор биометрии")
+                    self.persons.remove(person)
+            # если изображение у объекта person не существует - не добавлять человека в бд и вывести сообщение
+            if person.img is None:
+                print("В директории пользователя отсутствует изображение")
+                self.persons.remove(person)
 
         # сохранить итоговый массив persons в БД
         self.db.write_db(self.persons)
