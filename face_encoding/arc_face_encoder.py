@@ -22,7 +22,7 @@ class ArcFaceEncoder(Encoder):
         self.model = load_model()
         self.face_detector = RetinaFaceDetector()
 
-    def encode(self, img: np.ndarray, is_test=False) -> np.ndarray:
+    def encode(self, img: np.ndarray, is_test=False):
         # обнаружение лица на фото
         detected_face = self.face_detector.detect_and_align(img, is_test=True)
         return self.model(detected_face, training=False).numpy()[0]

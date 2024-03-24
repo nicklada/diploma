@@ -9,7 +9,7 @@ from person import Person
 
 class PersonManager:
     def __init__(self, encoder: Encoder, db_path: str):
-        self.img_path = "data_face"
+        self.img_path = "data_face_small"
         self.db = FormingDB(db_path)
         self.encoder: Encoder = encoder
         self.persons = self.db.read_db()
@@ -53,7 +53,7 @@ class PersonManager:
                 encoding = self.encoder.encode(person.img)
                 person.encoding = encoding
                 if encoding is None:
-                    print("Не удалось построить вектор биометрии")
+                    print("Не удалось построить вектор биометрии для ", person.id)
                     self.persons.remove(person)
             # если изображение у объекта person не существует - не добавлять человека в бд и вывести сообщение
             if person.img is None:

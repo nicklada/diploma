@@ -4,5 +4,5 @@ import numpy as np
 
 class Encoder(ABC):
     @abstractmethod
-    def encode(self, img: np.ndarray, is_test=False) -> np.ndarray:
+    def encode(self, img: np.ndarray, is_test=False):
         pass

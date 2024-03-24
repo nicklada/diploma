@@ -12,10 +12,11 @@ class RetinaFaceDetector:
         if len(faces) == 0:
             raise Exception("No faces found")
         face = cv2.cvtColor(faces[0], cv2.COLOR_BGR2RGB)
-        face_sized = cv2.resize(face, [112, 112])
+        face_sized = cv2.resize(face, [150, 150])
+
         if is_test:
             self.save_detected_and_aligned_face(face_sized)
-        face_sized = np.expand_dims(face_sized, axis=0)
+        #face_sized = np.expand_dims(face_sized, axis=0)
         return face_sized
 
     def save_detected_and_aligned_face(self, face):
