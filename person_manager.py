@@ -2,16 +2,16 @@ import os
 
 import cv2
 
-from encoder import Encoder
+from face_encoding.encoder import Encoder
 from form_db import FormingDB
 from person import Person
 
 
 class PersonManager:
-    def __init__(self):
+    def __init__(self, encoder: Encoder, db_path: str):
         self.img_path = "data_face"
-        self.db = FormingDB()
-        self.encoder = Encoder()
+        self.db = FormingDB(db_path)
+        self.encoder: Encoder = encoder
         self.persons = self.db.read_db()
         pass
 

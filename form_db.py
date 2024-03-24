@@ -4,8 +4,8 @@ from person import Person
 
 
 class FormingDB:
-    def __init__(self):
-        self.db_path = "db.json"
+    def __init__(self, db_path: str):
+        self.db_path = db_path
         pass
 
     def write_db(self, persons):

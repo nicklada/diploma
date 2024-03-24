@@ -36,10 +36,3 @@ def saturation_img(img, value=40):
     img = cv2.cvtColor(final_hsv, cv2.COLOR_HSV2BGR)
 
     return img
-
-
-def euclidean_dist(source_representation, test_representation):
-    euclidean_distance = source_representation - test_representation
-    euclidean_distance = np.sum(np.multiply(euclidean_distance, euclidean_distance))
-    euclidean_distance = np.sqrt(euclidean_distance)
-    return euclidean_distance

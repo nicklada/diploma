@@ -2,21 +2,36 @@ import json
 import os
 import cv2
 from authenticator import Authenticator
+from distance_calculaton.l2_euclidian_dist_calculator import EuclidianL2Calculator
+from face_detection.retina_face_detector import RetinaFaceDetector
+from face_encoding.arc_face_encoder import ArcFaceEncoder
 from person import Person
 from person_manager import PersonManager
 
-if __name__ == '__main__':
-    # создает объект класса Authenticator, передает лицо из test_faces в пайплайн,
-    # пайплайн строит вектор переданного лица и сравнивает его с векторами лиц из БД
-    authenticator = Authenticator()
-    test_img = cv2.imread('test_faces/m.0b309__0002.jpg')
-    authenticator.authenticate(test_img)
+# if __name__ == '__main__':
+#     # создает объект класса Authenticator, передает лицо из test_faces в пайплайн,
+#     # пайплайн строит вектор переданного лица и сравнивает его с векторами лиц из БД
+#     test_img = cv2.imread('test_faces/m.0b309__0002.jpg')
+#     encoder = ArcFaceEncoder()
+#     calculator = EuclidianL2Calculator()
+#     authenticator = Authenticator(encoder, calculator)
+#     authenticator.authenticate(test_img)
 
 # if __name__ == '__main__':
-#     # создает объект класса PersonManager и вызывает метод add_persons_to_db,
-#     # который делает ДБ в формате json из данных в директории data_face
-#     person_manager = PersonManager()
-#     person_manager.add_persons_to_db()
+#     detector = RetinaFaceDetector()
+#     test_img = cv2.imread('test_faces/m.0b309__0002.jpg')
+#     detected_face = detector.detect_and_align(test_img, is_test=True)
+#     encoder = ArcFaceEncoder()
+#     encoding = encoder.encode(detected_face)
+#     print(encoding)
+
+if __name__ == '__main__':
+    # создает объект класса PersonManager и вызывает метод add_persons_to_db,
+    # который делает ДБ в формате json из данных в директории data_face
+    encoder = ArcFaceEncoder()
+    db_path = "db_arcface.json"
+    person_manager = PersonManager(encoder, db_path)
+    person_manager.add_persons_to_db()
 
 
 def start_cam(self):

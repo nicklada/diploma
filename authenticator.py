@@ -1,12 +1,13 @@
-from encoder import Encoder
+from distance_calculaton.distance_calculator import Calculator
+from face_encoding.encoder import Encoder
 from person_manager import PersonManager
-from utils import euclidean_dist
 
 
 class Authenticator:
-    def __init__(self):
-        self.person_manager = PersonManager()
-        self.encoder = Encoder()
+    def __init__(self, encoder, calculator, db_path):
+        self.person_manager = PersonManager(encoder, db_path)
+        self.encoder: Encoder = encoder
+        self.calculator: Calculator = calculator
 
     def authenticate(self, img):
         """
@@ -18,7 +19,7 @@ class Authenticator:
         if encoding is not None:
             is_auth = False
             for person in self.person_manager.persons:
-                res = euclidean_dist(encoding, person.encoding)
+                res = self.calculator.calculate(encoding, person.encoding)
                 if res < 0.6:
                     print(f'it is {person.fullname}')
                     print(res)
