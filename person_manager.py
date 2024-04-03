@@ -1,16 +1,16 @@
 import os
-
 import cv2
-
+from face_detection.detector import Detector
 from face_encoding.encoder import Encoder
 from form_db import FormingDB
 from person import Person
 
 
 class PersonManager:
-    def __init__(self, encoder: Encoder, db_path: str):
-        self.img_path = "data_face_small"
+    def __init__(self, detector: Detector,encoder: Encoder, db_path: str):
+        self.img_path = "data_face_medium"
         self.db = FormingDB(db_path)
+        self.detector: Detector = detector
         self.encoder: Encoder = encoder
         self.persons = self.db.read_db()
         pass
@@ -50,15 +50,22 @@ class PersonManager:
 
             # если изображение у объекта person существует - построить по нему вектор биометрии
             if person.img is not None:
-                encoding = self.encoder.encode(person.img)
+                detected_img = self.detector.detect(person.img)
+                if detected_img is None:
+                    print("Не удалось обнаружить лицо ", person.id)
+                    self.persons.remove(person)
+                    continue
+                encoding = self.encoder.encode(detected_img)
                 person.encoding = encoding
                 if encoding is None:
                     print("Не удалось построить вектор биометрии для ", person.id)
                     self.persons.remove(person)
             # если изображение у объекта person не существует - не добавлять человека в бд и вывести сообщение
             if person.img is None:
-                print("В директории пользователя отсутствует изображение")
+                print("В директории пользователя отсутствует изображение для ", person.id)
                 self.persons.remove(person)
+
+            print("Обработан: ", person.id)
 
         # сохранить итоговый массив persons в БД
         self.db.write_db(self.persons)

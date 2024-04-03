@@ -1,14 +1,15 @@
 import numpy as np
 import dlib
 
+from face_detection.detector import Detector
 
-class DlibDetector:
+
+class DlibDetector(Detector):
     def __init__(self):
         self.face_detector = dlib.get_frontal_face_detector()
         self.dlib_facelandmark = dlib.shape_predictor("models/shape_predictor_68_face_landmarks_GTX.dat")
 
-
-    def detector(self, img: np.ndarray, is_test=False):
+    def detect(self, img: np.ndarray, is_test=False):
         # обнаружение лица на фото
         faces = self.face_detector(img)
         if len(faces) == 0:
