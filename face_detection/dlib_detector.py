@@ -13,7 +13,7 @@ class DlibDetector(Detector):
         # обнаружение лица на фото
         faces = self.face_detector(img)
         if len(faces) == 0:
-            raise Exception("No faces found")
+            return None
         img_shape: dlib.full_object_detection = self.dlib_facelandmark(img, faces[0])
         # выравнивание изображения
         img_aligned = dlib.get_face_chip(img, img_shape)

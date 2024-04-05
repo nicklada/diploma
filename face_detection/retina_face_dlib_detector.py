@@ -12,12 +12,13 @@ class RetinaFaceDlibDetector(Detector):
 
     def detect(self, img: np.ndarray, is_test=False):
         # обнаружение лица на фото и построение рамки
-        try:
-            faces = RetinaFace.detect_faces(img, model=self.retina_face_model)
-            facial_area = faces['face_1']["facial_area"]
-            rectangle = dlib.rectangle(facial_area[0], facial_area[1], facial_area[2], facial_area[3])
-        except Exception:
+        faces = RetinaFace.detect_faces(img, model=self.retina_face_model)
+        if 'face_1' not in faces:
             return None
+
+        facial_area = faces['face_1']["facial_area"]
+        rectangle = dlib.rectangle(facial_area[0], facial_area[1], facial_area[2], facial_area[3])
+
         # построение точек и вырезание лица по точкам
         img_shape: dlib.full_object_detection = self.dlib_facelandmark(img, rectangle)
         img_extracted = self.extract_face(img, img_shape)

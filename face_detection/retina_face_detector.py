@@ -16,7 +16,7 @@ class RetinaFaceDetector(Detector):
     def detect(self, img: np.ndarray, is_test=False):
         faces = RetinaFace.extract_faces(img_path=img, align=False)
         if len(faces) == 0:
-            raise Exception("No faces found")
+            return None
         face = cv2.cvtColor(faces[0], cv2.COLOR_BGR2RGB)
         face_sized = cv2.resize(face, self.size)
 
