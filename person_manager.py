@@ -7,8 +7,8 @@ from person import Person
 
 
 class PersonManager:
-    def __init__(self, detector: Detector,encoder: Encoder, db_path: str):
-        self.img_path = "data_face_medium"
+    def __init__(self, detector: Detector, encoder: Encoder, db_path: str, img_path: str = "data_20"):
+        self.img_path = img_path
         self.db = FormingDB(db_path)
         self.detector: Detector = detector
         self.encoder: Encoder = encoder

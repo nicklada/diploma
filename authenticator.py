@@ -25,16 +25,19 @@ class Authenticator:
         encoding = self.encoder.encode(detected_img)
 
         if encoding is not None:
-            is_auth = False
+            first_person = self.person_manager.persons[0]
+            min_res = self.calculator.calculate(encoding, np.array(first_person.encoding))
+            min_person_fullname = first_person.fullname
+
             for person in self.person_manager.persons:
                 res = self.calculator.calculate(encoding, np.array(person.encoding))
-                if res < self.threshold:
-                    print(f'[IT IS {person.fullname}: {res}]')
-                    is_auth = True
-                #else:
-                    #print(f'it is not {person.fullname}: {res}')
+                if res < min_res:
+                    min_res = res
+                    min_person_fullname = person.fullname
 
-            if not is_auth:
+            if min_res < self.threshold:
+                print(f'На фото: {min_person_fullname}. Расстояние - {min_res}')
+            else:
                 print('Лицо не найдено в базе')
         else:
             print('Лицо на изображении не обнаружено')
