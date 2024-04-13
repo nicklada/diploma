@@ -7,7 +7,7 @@ from person import Person
 
 
 class PersonManager:
-    def __init__(self, detector: Detector, encoder: Encoder, db_path: str, img_path: str = "data_20"):
+    def __init__(self, detector: Detector, encoder: Encoder, db_path: str, img_path: str = "datasets/data_20"):
         self.img_path = img_path
         self.db = FormingDB(db_path)
         self.detector: Detector = detector
