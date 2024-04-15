@@ -4,6 +4,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from person_manager import PersonManager
 from sklearn.metrics import auc
+import time
 
 
 class QualityChecker:
@@ -20,6 +21,7 @@ class QualityChecker:
         pass
 
     def check(self):
+
         positive_results = self.find(self.positive_img_path)
         negative_results = self.find(self.negative_img_path)
 
@@ -33,13 +35,18 @@ class QualityChecker:
         fpirs = []
         fnirs = []
 
+        execution_time = 0
         not_found = 0
         for r in positive_results:
             if not r.is_found:
                 not_found += 1
+            else:
+                execution_time += r.execution_time
         for r in negative_results:
             if not r.is_found:
                 not_found += 1
+            else:
+                execution_time += r.execution_time
 
         for t in thresholds:
             n1 = len(negative_results)
@@ -63,6 +70,7 @@ class QualityChecker:
 
         auc_value = auc(fpirs, tpirs)
         not_found_rate = not_found / (len(positive_results) + len(negative_results))
+        avg_execution_time = execution_time / (len(positive_results) + len(negative_results) - not_found)
 
         print(f'not_found_rate: {not_found_rate}')
         print(f'tpirs: {tpirs}')
@@ -70,6 +78,7 @@ class QualityChecker:
         print(f'fnirs: {fnirs}')
         print(f'thresholds: {thresholds}')
         print(f'AUC: {auc_value}')
+        print(f'avg_execution_time: {avg_execution_time}')
 
         optimal_idx = np.argmin(np.absolute((np.array(fnirs) - np.array(fpirs))))
         optimal_threshold = thresholds[optimal_idx]
@@ -98,12 +107,13 @@ class QualityChecker:
     def find(self, img_path):
         results = []
         for person_id in os.listdir(img_path):
+            start_time = time.time()
             person_path = os.path.join(img_path, person_id)
             img = cv2.imread(os.path.join(person_path, os.listdir(person_path)[0]))
             detected_img = self.detector.detect(img)
             if detected_img is None:
                 print(f"Не удалось обнаружить лицо {person_id}")
-                results.append(Result(False, person_id, "", 1))
+                results.append(Result(False, person_id, "", 1, None))
                 continue
             encoding = self.encoder.encode(detected_img)
 
@@ -117,20 +127,22 @@ class QualityChecker:
                     if res < min_res:
                         min_res = res
                         min_person_fullname = person.fullname
-
-                results.append(Result(True, person_id, min_person_fullname, min_res))
+                execution_time = time.time() - start_time
+                results.append(Result(True, person_id, min_person_fullname, min_res, execution_time))
             else:
                 print(f'Не удалось построить вектор биометрии для лица {person_id}')
-                results.append(Result(False, person_id, "", 1))
+                results.append(Result(False, person_id, "", 1, None))
+
         return results
 
 
 class Result:
-    def __init__(self, is_found, name, name_from_db, distance):
+    def __init__(self, is_found, name, name_from_db, distance, execution_time):
         self.is_found = is_found
         self.name = name
         self.name_from_db = name_from_db
         self.distance = distance
+        self.execution_time = execution_time
 
     def __repr__(self):
         return f'\n{self.name} => {self.name_from_db}: {self.distance}'

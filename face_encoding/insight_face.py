@@ -11,5 +11,7 @@ class InsightFaceEncoder(Encoder):
 
     def encode(self, img: np.ndarray, is_test=False):
         emb_res = self.app.get(img)
+        if len(emb_res) == 0:
+            return None
 
         return emb_res[0].embedding

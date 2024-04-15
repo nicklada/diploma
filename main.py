@@ -106,10 +106,10 @@ def retina_detector_ghost_encoder_authenticate(img_path):
 #         detector,
 #         encoder,
 #         calculator,
-#         "datasets/dataset_20/db",
-#         "datasets/dataset_20/positive",
-#         "datasets/dataset_20/negative",
-#         "databases/quality_check_20.json"
+#         "datasets/dataset/db",
+#         "datasets/dataset/positive",
+#         "datasets/dataset/negative",
+#         "databases/quality_check.json"
 #     )
 #     quality_checker.check()
 
@@ -121,10 +121,10 @@ def retina_detector_ghost_encoder_authenticate(img_path):
 #         detector,
 #         encoder,
 #         calculator,
-#         "datasets/dataset_20/db",
-#         "datasets/dataset_20/positive",
-#         "datasets/dataset_20/negative",
-#         "databases/quality_check_20.json"
+#         "datasets/dataset/db",
+#         "datasets/dataset/positive",
+#         "datasets/dataset/negative",
+#         "databases/quality_check.json"
 #     )
 #     quality_checker.check()
 
@@ -136,10 +136,10 @@ def retina_detector_ghost_encoder_authenticate(img_path):
 #         detector,
 #         encoder,
 #         calculator,
-#         "datasets/dataset_20/db",
-#         "datasets/dataset_20/positive",
-#         "datasets/dataset_20/negative",
-#         "databases/quality_check_20.json"
+#         "datasets/dataset/db",
+#         "datasets/dataset/positive",
+#         "datasets/dataset/negative",
+#         "databases/quality_check.json"
 #     )
 #     quality_checker.check()
 
@@ -151,9 +151,9 @@ if __name__ == '__main__':
         detector,
         encoder,
         calculator,
-        "datasets/dataset_20/db",
-        "datasets/dataset_20/positive",
-        "datasets/dataset_20/negative",
-        "databases/quality_check_20.json"
+        "datasets/dataset/db",
+        "datasets/dataset/positive",
+        "datasets/dataset/negative",
+        "databases/quality_check.json"
     )
     quality_checker.check()
