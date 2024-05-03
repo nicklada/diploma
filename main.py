@@ -1,12 +1,16 @@
 import cv2
+from matplotlib import pyplot as plt
+
 from authenticator import Authenticator
 from distance_calculaton.euclidian_dist_calculator import EuclidianCalculator
 from distance_calculaton.l2_euclidian_dist_calculator import EuclidianL2Calculator
 from face_detection.dlib_detector import DlibDetector
 from face_detection.dummy_face_detector import DummyFaceDetector
+from face_detection.mtcnn_detector import MtcnnDetector
 from face_detection.retina_face_detector import RetinaFaceDetector
 from face_detection.retina_face_dlib_detector import RetinaFaceDlibDetector
 from face_encoding.dlib_encoder import DlibEncoder
+from face_encoding.facenet_encoder import FaceNetEncoder
 from face_encoding.ghost_facenet_encoder import GhostFaceNetEncoder
 from face_encoding.insight_face import InsightFaceEncoder
 from person_manager import PersonManager
@@ -98,6 +102,7 @@ def retina_detector_ghost_encoder_authenticate(img_path):
 #     retina_detector_dlib_encoder_authenticate(img_path)
 #     print("RETINA+GHOST")
 #     retina_detector_ghost_encoder_authenticate(img_path)
+
 # if __name__ == '__main__':
 #     detector = DlibDetector()
 #     encoder = DlibEncoder()
@@ -129,9 +134,24 @@ def retina_detector_ghost_encoder_authenticate(img_path):
 #     quality_checker.check()
 
 # if __name__ == '__main__':
-#     detector = RetinaFaceDetector()
-#     encoder = GhostFaceNetEncoder()
-#     calculator = EuclidianCalculator(10)
+#     detector = MtcnnDetector()
+#     encoder = FaceNetEncoder()
+#     calculator = EuclidianCalculator(2)
+#     quality_checker = QualityChecker(
+#         detector,
+#         encoder,
+#         calculator,
+#         "datasets/dataset/db",
+#         "datasets/dataset/positive",
+#         "datasets/dataset/negative",
+#         "databases/quality_check.json"
+#     )
+#     quality_checker.check()
+
+# if __name__ == '__main__':
+#     detector = DummyFaceDetector()
+#     encoder = InsightFaceEncoder()
+#     calculator = EuclidianCalculator(100)
 #     quality_checker = QualityChecker(
 #         detector,
 #         encoder,
@@ -144,16 +164,32 @@ def retina_detector_ghost_encoder_authenticate(img_path):
 #     quality_checker.check()
 
 if __name__ == '__main__':
-    detector = DummyFaceDetector()
-    encoder = InsightFaceEncoder()
-    calculator = EuclidianCalculator(100)
-    quality_checker = QualityChecker(
-        detector,
-        encoder,
-        calculator,
-        "datasets/dataset/db",
-        "datasets/dataset/positive",
-        "datasets/dataset/negative",
-        "databases/quality_check.json"
-    )
-    quality_checker.check()
+    detectors = [DlibDetector(), RetinaFaceDlibDetector(), MtcnnDetector(), DummyFaceDetector()]
+    encoders = [DlibEncoder(), DlibEncoder(), FaceNetEncoder(), InsightFaceEncoder()]
+    calculators = [EuclidianCalculator(), EuclidianCalculator(), EuclidianCalculator(2), EuclidianCalculator(100)]
+    fpirs = []
+    tpirs = []
+    for i in range(4):
+        quality_checker = QualityChecker(
+            detectors[i],
+            encoders[i],
+            calculators[i],
+            "datasets/dataset/db",
+            "datasets/dataset/positive",
+            "datasets/dataset/negative",
+            "databases/quality_check.json"
+        )
+        result = quality_checker.check()
+        fpirs.append(result[0])
+        tpirs.append(result[1])
+    plt.plot(fpirs[0], tpirs[0], label='Dlib+Dlib')
+    plt.plot(fpirs[1], tpirs[1], label='RetinaFace+Dlib')
+    plt.plot(fpirs[2], tpirs[2], label='MTCNN+FaceNet')
+    plt.plot(fpirs[3], tpirs[3], label='RetinaFace+InsightFace')
+    plt.legend()
+    plt.ylabel('True Positive Rate')
+    plt.xlabel('False Positive Rate')
+    plt.title('Сравнение ROC-curve всех вариаций алгоритма')
+    plt.show()
+    plt.grid(True)
+    plt.savefig('quality_check/results/roc_all.png')

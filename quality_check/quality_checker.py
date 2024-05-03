@@ -82,27 +82,42 @@ class QualityChecker:
 
         optimal_idx = np.argmin(np.absolute((np.array(fnirs) - np.array(fpirs))))
         optimal_threshold = thresholds[optimal_idx]
+        fnir = fnirs[optimal_idx]
+        fpir = fpirs[optimal_idx]
         print(f'optimal threshold: {optimal_threshold}')
+        print(f'fnir for optimal threshold: {fnir}')
+        print(f'fpir for optimal threshold: {fpir}')
 
         # Построение графика ROC
         plt.plot(fpirs, tpirs)
         plt.ylabel('True Positive Rate')
         plt.xlabel('False Positive Rate')
+        plt.title('ROC-curve')
         plt.show()
+        plt.grid(True)
         plt.savefig('quality_check/results/roc.png')
 
         # Очистить график для построения следующего графика
         plt.clf()
 
         # Построение графика DET
-        plt.plot(fpirs, fnirs)
+        plt.plot(fpirs, fnirs, label='DET-curve')
         plt.ylabel('False Negative Rate')
         plt.xlabel('False Positive Rate')
+        plt.legend()
+        plt.grid(True)
         plt.show()
         # Построение прямой FNIR=FPIR
-        plt.plot(np.linspace(0, 1, 101), np.linspace(0, 1, 101))
+        plt.plot(np.linspace(0, 1, 101), np.linspace(0, 1, 101), label='FNIR=FPIR')
+        plt.title('DET-curve')
+        plt.scatter(fpir, fnir, color='green', s=40, label=f'Optimal T={optimal_threshold.round(3)}')
+        plt.legend()
         plt.show()
         plt.savefig('quality_check/results/det.png')
+        # Очистить график для построения следующего графика
+        plt.clf()
+
+        return fpirs, tpirs, fnir
 
     def find(self, img_path):
         results = []
